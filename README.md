@@ -3,6 +3,40 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## The model
+
+
+
+I implemented the Kinematic Bicycle Model:
+
+ - `x`: Vehicle's X position
+ - `y`: Vehicle's Y position
+ - `psi`: Vehicle's orientation
+ - `v`: velocity.
+ - `cte`: cross track error
+ - `epsi`: orientation error
+
+The update equation follows what is described in lectures
+
+```cpp
+fg[x_start + t + 1] = x1 - (x0 + dt * v0 * CppAD::cos(psi0));
+fg[y_start + t + 1] = y1 - (y0 + dt * v0 * CppAD::sin(psi0));
+fg[psi_start + t + 1] = psi1 - (psi0 + v0 * delta0 / Lf * dt);
+fg[v_start + t + 1] = v1 - (v0 + dt * a0);
+fg[cte_start + t + 1] = cte1 - ((f0 - y0) + (dt * v0 * CppAD::sin(epsi0)));
+fg[epsi_start + t + 1] = epsi1 - ((psi0 - psides0) + dt * v0 * delta0 / Lf);
+
+## Timestep Length and Elapsed Duration (N & dt)
+
+My method is similar to previous project, triall &  error. I start with a large N and small dt and run the model again and again until I find a combination that works smaller `N=10` and large `dt=0.2`. Larger dt is to deal with latency.
+
+## Polynomial Fitting and MPC Preprocessing
+
+The preprocessing step that was done is transforming waypoints from global coordinate sytems to vehicale coordinate system.
+## Model Predictive Control with Latency
+
+I picked a large `dt` to deal with latency.
+
 ## Dependencies
 
 * cmake >= 3.5

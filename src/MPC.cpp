@@ -133,35 +133,33 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   for (int i = 0; i < n_vars; i++) {
     vars[i] = 0;
   }
-
-  vars[x_start] = x;
-  vars[y_start] = y;
-  vars[psi_start] = psi;
-  vars[v_start] = v;
   vars[cte_start] = cte;
   vars[epsi_start] = epsi;
+  vars[psi_start] = psi;
+  vars[v_start] = v;
+  vars[x_start] = x;
+  vars[y_start] = y;
+  
 
-
-  Dvector vars_lowerbound(n_vars);
-  Dvector vars_upperbound(n_vars);
+  Dvector vars_lbound(n_vars);
+  Dvector vars_ubound(n_vars);
   // TODO: Set lower and upper limits for variables.
   for (int i = 0; i < delta_start; i++) {
-    vars_lowerbound[i] = -1.0e19;
-    vars_upperbound[i] = 1.0e19;
+    vars_lbound[i] = -1.0e18;
+    vars_ubound[i] = 1.0e18;
   }
 
   for (int i = delta_start; i < a_start; i++) {
-    vars_lowerbound[i] = -0.436332;
-    vars_upperbound[i] = 0.436332;
+    vars_lbound[i] = -0.44;
+    vars_ubound[i] = 0.44;
   }
 
   for (int i = a_start; i < n_vars; i++) {
-    vars_lowerbound[i] = -1.0;
-    vars_upperbound[i] = 1.0;
+    vars_lbound[i] = -1.0;
+    vars_ubound[i] = 1.0;
   }
 
-  // Lower and upper limits for the constraints
-  // Should be 0 besides initial state.
+ 
   Dvector constraints_lowerbound(n_constraints);
   Dvector constraints_upperbound(n_constraints);
   for (int i = 0; i < n_constraints; i++) {
@@ -208,7 +206,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
   // solve the problem
   CppAD::ipopt::solve<Dvector, FG_eval>(
-      options, vars, vars_lowerbound, vars_upperbound, constraints_lowerbound,
+      options, vars, vars_lbound, vars_ubound, constraints_lowerbound,
       constraints_upperbound, fg_eval, solution);
 
   // Check some of the solution values
@@ -223,11 +221,11 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   //
   // {...} is shorthand for creating a vector, so auto x1 = {1.0,2.0}
   // creates a 2 element double vector.
-  mpc_x_vals = {};
-  mpc_y_vals = {};
+  mpc_values_x = {};
+  mpc_values_y = {};
   for (int i = 0; i < N - 1; i++) {
-    mpc_x_vals.push_back(solution.x[x_start + i + 1]);
-    mpc_y_vals.push_back(solution.x[y_start + i + 1]);
+    mpc_values_x.push_back(solution.x[i + x_start + 1]);
+    mpc_values_y.push_back(solution.x[i + y_start + 1]);
   }
   return {solution.x[delta_start], solution.x[a_start]};
 
