@@ -5,8 +5,6 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## The model
 
-
-
 I implemented the Kinematic Bicycle Model:
 
  - `x`: Vehicle's X position
@@ -25,7 +23,7 @@ fg[psi_start + t + 1] = psi1 - (psi0 + v0 * delta0 / Lf * dt);
 fg[v_start + t + 1] = v1 - (v0 + dt * a0);
 fg[cte_start + t + 1] = cte1 - ((f0 - y0) + (dt * v0 * CppAD::sin(epsi0)));
 fg[epsi_start + t + 1] = epsi1 - ((psi0 - psides0) + dt * v0 * delta0 / Lf);
-
+```
 ## Timestep Length and Elapsed Duration (N & dt)
 
 My method is similar to previous project, triall &  error. I start with a large N and small dt and run the model again and again until I find a combination that works smaller `N=10` and large `dt=0.2`. Larger dt is to deal with latency.
