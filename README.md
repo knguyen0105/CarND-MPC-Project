@@ -33,7 +33,7 @@ My method is similar to previous project, triall &  error. I start with a large 
 The preprocessing step that was done is transforming waypoints from global coordinate sytems to vehicale coordinate system.
 ## Model Predictive Control with Latency
 
-I picked a large `dt` to deal with latency. Furthermore, the latency is accounted for in the model
+I picked a large `dt` to deal with a 100 millisecond latency. Furthermore, the latency is accounted for in the model
 ```cpp
 Eigen::VectorXd state_vector(6);
 double latency = 0.1;
