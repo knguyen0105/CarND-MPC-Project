@@ -123,6 +123,8 @@ int main() {
           double latency = 0.1;
           double Lf = 2.67;
           double x = v * cos(psi) * latency;
+          cte= cte + v*sin(epsi)*latency;
+          epsi = epsi + v*delta*latency/Lf;
           psi = v / Lf * delta * latency;
           v = v + throttle * latency;
 
