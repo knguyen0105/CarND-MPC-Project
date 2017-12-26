@@ -33,7 +33,19 @@ My method is similar to previous project, triall &  error. I start with a large 
 The preprocessing step that was done is transforming waypoints from global coordinate sytems to vehicale coordinate system.
 ## Model Predictive Control with Latency
 
-I picked a large `dt` to deal with latency.
+I picked a large `dt` to deal with latency. Furthermore, the latency is accounted for in the model
+```cpp
+Eigen::VectorXd state_vector(6);
+double latency = 0.1;
+double Lf = 2.67;
+double x = v * cos(psi) * latency;
+psi = v / Lf * delta * latency;
+v = v + throttle * latency;
+
+state_vector << x, 0, psi, v, cte, epsi;
+
+auto results = mpc.Solve(state_vector, coeffs);
+```
 
 ## Dependencies
 
